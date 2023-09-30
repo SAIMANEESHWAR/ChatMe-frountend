@@ -36,3 +36,32 @@
     transform: rotate(360deg);
   }
 }
+/**/
+.picker-container {
+  position: relative;
+  width: 300px;
+}
+.emoji-icon {
+  cursor: pointer;
+  position: absolute;
+  top: 8px;
+  right: 5px;
+}
+.input-style {
+  padding: 7px 30px 7px 10px;
+  width: calc(100% - 40px);
+  border-radius: 3px;
+  border: 1px solid #999;
+  margin-bottom: 10px;
+}
+/**/
+.custom-modal {
+  background-color: rgba(255, 255, 255, 0.9); /* Adjust the background color and opacity */
+  border: none; /* Remove the modal border */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Add a shadow for depth */
+  transition: background-color 0.3s ease; /* Add a smooth transition effect */
+}
+
+.custom-modal:hover {
+  background-color: rgba(255, 255, 255, 0.9); /* Keep the background color when hovered */
+}

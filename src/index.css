@@ -11,3 +11,68 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.profile-23 i{
+  margin-left: 1px;
+  font-size: 22px;
+  font-weight: 400px;
+  margin-top: 10px;
+  margin-right:10px;
+}
+.profile-23 img{
+  margin-left: 3px;
+  margin-right:3px;
+  width:50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit:cover;
+  margin-top: 1px;
+}
+.profilenavbar img{
+  margin-left: 2px;
+  margin-right:2px;
+  width:40px;
+  height:40px;
+  border-radius: 50%;
+  object-fit:cover;
+  
+}
+
+.innerboxchat{
+border-radius: 10px 0px 10px 10px; 
+background: lightblue;
+}
+.innerboxchatleft{
+  border-radius: 0px 10px 10px 10px; 
+  background: lightblue;
+  }
+
+  .profilechat img{
+    margin-left: 2px;
+    margin-right:2px;
+    width:25px;
+    height:25px;
+    border-radius: 50%;
+    object-fit:cover;
+    
+  }
+
+
+  .fixed-button {
+    position: fixed;
+    top: 113px; /* Adjust this value to set the desired vertical position */
+    right: 49px; /* Adjust this value to set the desired horizontal position */
+    padding: 10px 20px;
+    background-color: rgba(172, 4, -26, 0.5);
+    color: #fff;
+    border: none;
+    border-radius: 17px;
+    cursor: pointer;
+}
+
+/* Media query for screen size adjustments */
+@media screen and (max-width: 768px) {
+    .fixed-button {
+        top: 105px; /* Adjust the position for smaller screens */
+        right: 35px; /* Adjust the position for smaller screens */
+    }
+}
