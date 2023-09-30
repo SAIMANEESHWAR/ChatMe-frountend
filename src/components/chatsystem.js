@@ -9,6 +9,8 @@ import io from "socket.io-client";
 import axios from 'axios';
 import girlwaitingimg from './photos/Girlwaiting2.png';
 import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid';//
+
 
 const socket = io.connect("https://chatme-backend-p7le.onrender.com");
 
@@ -39,6 +41,13 @@ export default function Chatsystem() {
   const [sessionverifieduserid, setsessionverifieduserid] = useState(sessionStorage.getItem('verifieduseridsession'));
   const [sessionverifiedusername, setsessionverifiedusername] = useState(sessionStorage.getItem('verifiedusernamesession'));
   const [sessionverifieduserimg, setsessionverifieduserimg] = useState(sessionStorage.getItem('verifieduserimgsession'));
+
+
+  //offcanvas shift
+  const [privatefriend, setprivatefriend] = useState([]);//
+  const [privatefriendroomid, setprivatefriendroomid] = useState([]);
+  const [spinner, setspinner] = useState(false);
+  const [myfriends, setmyfriends] = useState([]);
 
     useEffect(()=>{
       if(sessionStorage.getItem('verifieduseridsession')==null ||sessionStorage.getItem('verifieduseridsession')==undefined){
@@ -203,6 +212,60 @@ const setimg=(index)=>{
 }
 
 
+//shifted from off canvas
+const addprivatechat = async () => {
+  var id = document.getElementById('privatefriendid').value;
+  if (id != null && id != '' && id != undefined) {
+    setspinner(true);
+    const newRoomId = uuidv4();
+
+    try {
+      var check = await axios.post('https://chatme-backend-p7le.onrender.com/checkid', { id });
+    }
+    catch (e) {
+    }
+    try {
+      if (check.status === 200) {
+        console.log(myfriends);
+
+        if (!myfriends.includes(id)) {
+          const response = await axios.post('https://chatme-backend-p7le.onrender.com/addroomids', { id, userid: sessionverifieduserid, roomid: newRoomId });
+          if (response.status === 200) {
+            console.log(' added succesfully');
+            setprivatefriend((prevValues) => [...prevValues, id]);
+            setprivatefriendroomid((prevValues) => [...prevValues, newRoomId]);
+
+            var btnn = document.getElementById("modaladdfrndbtn");
+            btnn.click();
+            setspinner(false);
+
+          } else {
+            console.log(' not added');
+            document.getElementById("msgatmodal").innerHTML = "Errror in Adding friend";
+            setspinner(false);
+
+
+          }
+        }
+        else {
+          console.log("user name already exist")
+          document.getElementById("msgatmodal").innerHTML = "You are already friends";
+          setspinner(false);
+        }
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+
+    setspinner(false);
+  }
+  else {
+    console.log();
+    document.getElementById("msgatmodal").innerHTML = "Enter correct Id";
+  }
+
+}
+
   return (
     <div>
              {/* <!-- Modal  selected image hover--> */}
@@ -233,14 +296,19 @@ const setimg=(index)=>{
             <div className="d-none d-lg-block">
               {/* Fixed Sidebar for Large Screens */}
 
-              <Sideoffcanvas  setImageselectedhover={setimageselectedhover} setidselectedhover={setidselectedhover}/>
+              <Sideoffcanvas  setImageselectedhover={setimageselectedhover} setidselectedhover={setidselectedhover} 
+              setspinner={setspinner} spinner={spinner} setprivatefriendroomid={setprivatefriendroomid} privatefriendroomid={privatefriendroomid}
+              setprivatefriend={setprivatefriend}  privatefriend={privatefriend}  setmyfriends={setmyfriends}  myfriends={myfriends}
+              />
 
             </div>
 
             <div className="d-lg-none" >
               <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
-                <Sideoffcanvas setImageselectedhover={setimageselectedhover}  setidselectedhover={setidselectedhover}/>
-              </div>
+              <Sideoffcanvas  setImageselectedhover={setimageselectedhover} setidselectedhover={setidselectedhover} 
+              setspinner={setspinner} spinner={spinner} setprivatefriendroomid={setprivatefriendroomid} privatefriendroomid={privatefriendroomid}
+              setprivatefriend={setprivatefriend}  privatefriend={privatefriend}   setmyfriends={setmyfriends}  myfriends={myfriends}
+              />              </div>
 
             </div>
           </div>
@@ -406,6 +474,53 @@ const setimg=(index)=>{
           </div>
         </div>
       </div>
+
+      
+            {/* <!-- Modal of add friend--> */}
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">Enter your friend id
+              <div className="d-flex" role="search">
+                {/* <button className="btn btn-outline-success me-3"  >Private chat</button> */}
+                {/* <button className="btn btn-outline-success me-3" onClick={groupchat} >Group chat</button> */}
+              </div>
+              <button type="button" id="modaladdfrndbtn" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body ">
+              {/* private */}
+
+              <div class="">
+                <p id="msgatmodal"></p>
+                <label for="exampleInputEmail1" class="form-label">Id :</label>
+                <input type="text" class="form-control" id="privatefriendid" aria-describedby="emailHelp" required />
+
+                <div id="emailHelp" class="form-text">We'll never provide you any ids for security reasons</div>
+
+              </div>
+
+
+            </div>
+            <div class="modal-footer">
+              {spinner == true ? (
+                <button type="button" class="shadow btn btn-primary">
+
+                  <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                </button>
+              ) : (
+                <button type="button" onClick={addprivatechat} class="shadow btn btn-primary">Add Friend</button>
+
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
     </div>
   )
 }
